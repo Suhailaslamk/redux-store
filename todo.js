@@ -1,24 +1,35 @@
-import {createStore} from 'redux'
+import { combineReducers, createStore } from "redux";
 
-const initialState={
-    value:10
+function counterReducer(state={count : 10},action){
+    switch(action.type){
+        case 'increment':
+            return {count : state.count + 1}
+            case 'decrement':
+                return {count : state.count - 1}
+                default :
+                    return state;
+    }
 }
-function reducer(state=initialState,action){
-switch(action.type){
-    case "increment" :
-        return {...state,value:state.value + 1}
-        case "decrement" :
-            return {...state,value:state.value-1}
-
-            default :
-            return state;
-} 
-
+const initial={
+    todos:[]
 }
-const store =createStore(reducer)
+function addTodo(state=initial,action){
+    switch(action.type){
+        case 'addTodo':
+            return {todos :[...state.todos,action.payload.text]}
+                default :
+                    return state;
+    }
+}
 
-store.dispatch({type:"decrement"})
-console.log(store.getState());
-store.dispatch({type:"decrement"})
-console.log(store.getState());
+const reducers = combineReducers({
+    counter:counterReducer,
+    todo:addTodo
+})
 
+const store =createStore(reducers)
+
+store.dispatch({type:'increment'})
+store.dispatch({type:'addTodo',payload:{text : 'you did'}})
+
+console.log(store.getState());
